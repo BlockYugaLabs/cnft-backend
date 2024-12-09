@@ -1,5 +1,11 @@
+import config from "./../config/index"
+const { JWT_SECRET } = config;
 
 import { Request, Response } from "express";
+
+import * as jwt from "jsonwebtoken";
+
+import userModel from "../model/user";
 
 import UserService from "../service/user";
 
@@ -16,12 +22,26 @@ class UserController {
             const isVerified = await userService.signatureVerification(publicKey, signature, message);
 
             if (!isVerified)
-                res.send({
-                    "msg": "not signed successfully"
-                });
+                res.sendStatus(403);
+
+            const user = await userModel.findOne({
+                publicKey
+            });
+
+            if (!user) {
+                await new userModel({
+                    publicKey
+                }).save();
+            }
+
+            const token = jwt.sign({
+                publicKey
+            }, JWT_SECRET as jwt.Secret, {
+                expiresIn: '1hr'
+            })
 
             res.send({
-                "msg": "signed successfully"
+                token
             });
 
         } catch (err) {
