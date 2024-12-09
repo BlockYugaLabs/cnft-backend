@@ -25,6 +25,7 @@ class UserController {
             });
 
         } catch (err) {
+            console.log("Err", err)
             res.status(500).send({
                 "msg": "internal server error."
             })
