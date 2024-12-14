@@ -19,10 +19,10 @@ class UserController {
         try {
 
             const { publicKey, signature, message } = req.body;
-            const isVerified = await userService.signatureVerification(publicKey, signature, message);
+            //const isVerified = //await userService.signatureVerification(publicKey, signature, message);
 
-            if (!isVerified)
-                res.sendStatus(403);
+            // if (!isVerified)
+            //     res.sendStatus(403);
 
             const user = await userModel.findOne({
                 publicKey
